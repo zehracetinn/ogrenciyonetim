@@ -17,10 +17,7 @@ public class ProjectsController : ControllerBase
         _db = db;
     }
 
-    // ============================================================
-    // =====================  ADMIN  ===============================
-    // ============================================================
-
+    
     [HttpGet]
     [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetAll()
@@ -85,9 +82,7 @@ public class ProjectsController : ControllerBase
         return Ok(applicants);
     }
 
-    // ============================================================
-    // =====================  STUDENT  ============================
-    // ============================================================
+    
 
     [HttpGet("list")]
     [Authorize(Roles = "student")]

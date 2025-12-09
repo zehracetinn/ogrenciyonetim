@@ -9,13 +9,12 @@ namespace ProjeOgrenciYonetim.Web.Models
 
         public int StudentId { get; set; }
 
-        // ❗ Cycle oluşmasın diye JSON'a gönderilmeyecek
         [JsonIgnore]
         public Student Student { get; set; } = default!;
 
         public int ProjectId { get; set; }
 
-        // ❗ Project → Applications → Project döngüsü var, JSON'dan çıkar
+        
         [JsonIgnore]
         public Project Project { get; set; } = default!;
         

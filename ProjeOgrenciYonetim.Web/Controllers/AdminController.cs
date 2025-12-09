@@ -18,9 +18,6 @@ namespace ProjeOgrenciYonetim.Web.Controllers
             _db = db;
         }
 
-        // =====================================================================
-        //  TÜM ÖĞRENCİLERİ GETİR
-        // =====================================================================
         [HttpGet("students")]
         public async Task<IActionResult> GetAllStudents()
         {
@@ -31,9 +28,6 @@ namespace ProjeOgrenciYonetim.Web.Controllers
             return Ok(students);
         }
 
-        // =====================================================================
-        //  ÖĞRENCİ ONAYLA
-        // =====================================================================
         [HttpPut("students/{id}/approve")]
         public async Task<IActionResult> Approve(int id)
         {
@@ -48,9 +42,6 @@ namespace ProjeOgrenciYonetim.Web.Controllers
             return Ok(student);
         }
 
-        // =====================================================================
-        //  ÖĞRENCİ REDDET
-        // =====================================================================
         [HttpPut("students/{id}/reject")]
         public async Task<IActionResult> Reject(int id)
         {

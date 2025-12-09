@@ -10,7 +10,7 @@ using System.Linq;
 namespace ProjeOgrenciYonetim.Web.Controllers
 {
     [ApiController]
-    [Route("api/Projects/applications")]   // ✔ FRONTEND ile TAM uyumlu
+    [Route("api/Projects/applications")]   
     public class ProjectApplicationsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -20,9 +20,8 @@ namespace ProjeOgrenciYonetim.Web.Controllers
             _context = context;
         }
 
-        // ================================
         // GET: api/Projects/applications/{projectId}
-        // ================================
+        
 
 [HttpGet("{projectId}")]
 public async Task<IActionResult> GetApplicants(int projectId)
@@ -52,10 +51,6 @@ public async Task<IActionResult> GetApplicants(int projectId)
 }
 
 
-
-        // ================================
-        // PUT: api/Projects/applications/{id}/approve
-        // ================================
         [HttpPut("{id}/approve")]
         public async Task<IActionResult> Approve(int id)
         {
@@ -71,9 +66,6 @@ public async Task<IActionResult> GetApplicants(int projectId)
             return Ok("Başvuru onaylandı.");
         }
 
-        // ================================
-        // PUT: api/Projects/applications/{id}/reject
-        // ================================
         [HttpPut("{id}/reject")]
         public async Task<IActionResult> Reject(int id)
         {

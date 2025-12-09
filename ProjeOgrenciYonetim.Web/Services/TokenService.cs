@@ -24,10 +24,10 @@ namespace ProjeOgrenciYonetim.Web.Services
                 new Claim("studentId", s.Id.ToString()),
                 new Claim("email", s.Email),
 
-                // FRONTEND için role
+                
                 new Claim("role", "student"),
 
-                // BACKEND için role
+                
                 new Claim(ClaimTypes.Role, "student")
             };
 
@@ -40,10 +40,10 @@ namespace ProjeOgrenciYonetim.Web.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, admin.Id.ToString()),
 
-                // FRONTEND
+                
                 new Claim("role", "admin"),
 
-                // BACKEND
+                
                 new Claim(ClaimTypes.Role, "admin"),
 
                 new Claim("userName", admin.UserName)

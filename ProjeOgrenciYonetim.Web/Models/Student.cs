@@ -13,7 +13,6 @@ namespace ProjeOgrenciYonetim.Web.Models
         public string KnownTechnologies { get; set; } = default!;
         public StudentStatus Status { get; set; } = StudentStatus.Pending;
 
-        // ❗ Cycle burada oluşuyor → JSON'a gitmemeli
         [JsonIgnore]
         public ICollection<ProjectApplication> Applications { get; set; }
             = new List<ProjectApplication>();

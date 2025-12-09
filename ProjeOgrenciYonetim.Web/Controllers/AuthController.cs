@@ -20,9 +20,7 @@ public class AuthController : ControllerBase
         _tokenService = tokenService;
     }
 
-    // ============================
-    // STUDENT REGISTER
-    // ============================
+  
     [HttpPost("student-register")]
     public async Task<IActionResult> StudentRegister(StudentRegisterDto dto)
     {
@@ -38,7 +36,7 @@ public class AuthController : ControllerBase
             Email = dto.Email,
             StudentNumber = dto.StudentNumber,
             KnownTechnologies = dto.KnownTechnologies,
-            PasswordHash = dto.Password, // TODO: Hash yapılacak
+            PasswordHash = dto.Password, 
             Status = StudentStatus.Pending
         };
 
@@ -48,9 +46,7 @@ public class AuthController : ControllerBase
         return Ok("Kayıt başarılı. Admin onayından sonra giriş yapabilirsiniz.");
     }
 
-    // ============================
-    // STUDENT LOGIN (JWT)
-    // ============================
+    
     [HttpPost("student-login")]
     public async Task<IActionResult> StudentLogin(StudentLoginDto dto)
     {
@@ -68,9 +64,7 @@ public class AuthController : ControllerBase
         return Ok(new { token });
     }
 
-    // ============================
-    // ADMIN LOGIN (JWT)
-    // ============================
+    
     [HttpPost("admin-login")]
     public async Task<IActionResult> AdminLogin(AdminLoginDto dto)
     {
@@ -86,14 +80,11 @@ public class AuthController : ControllerBase
     }
 
 
-    // ============================
-    // ADMIN REGISTER (Geçici olarak admin oluşturmak için)
-    // ============================
+    
     [HttpPost("admin-register")]
     public async Task<IActionResult> AdminRegister([FromBody] AdminRegisterDto dto) 
     {
-        // Eğer AdminRegisterDto yoksa, bu parametreyi class içinde tanımlayabilirsin 
-        // ya da mevcut bir DTO kullanabilirsin.
+       
         
         if (await _db.AdminUsers.AnyAsync(x => x.Email == dto.Email))
             return BadRequest("Bu email zaten kayıtlı.");
@@ -102,7 +93,7 @@ public class AuthController : ControllerBase
         {
             UserName = dto.UserName,
             Email = dto.Email, 
-            PasswordHash = dto.Password // Şifreleme yapmıyorsan direkt ata
+            PasswordHash = dto.Password 
         };
 
         _db.AdminUsers.Add(newAdmin);

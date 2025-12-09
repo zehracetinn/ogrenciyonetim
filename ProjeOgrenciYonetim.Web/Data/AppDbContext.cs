@@ -19,7 +19,7 @@ namespace ProjeOgrenciYonetim.Web.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Student için benzersiz alanlar
+            
             modelBuilder.Entity<Student>()
                 .HasIndex(s => s.Email)
                 .IsUnique();
@@ -33,12 +33,12 @@ namespace ProjeOgrenciYonetim.Web.Data
                 .HasIndex(pa => new { pa.StudentId, pa.ProjectId })
                 .IsUnique();
 
-            // Admin User
+            
             modelBuilder.Entity<AdminUser>()
                 .HasIndex(a => a.UserName)
                 .IsUnique();
 
-            // Seed admin (admin / 1234)
+            
             modelBuilder.Entity<AdminUser>().HasData(
                 new AdminUser
                 {
