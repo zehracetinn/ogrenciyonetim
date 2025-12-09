@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { saveToken } from "../storage/token";
-import { api } from "../api/api"; // backend bağlantınız
-import { useAuth } from "../context/AuthContext"; // Global durum yönetimi için Context Hook
+import { api } from "../api/api"; 
+import { useAuth } from "../context/AuthContext"; 
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -11,14 +11,14 @@ export default function LoginScreen({ navigation }) {
   const { signIn } = useAuth(); 
 
   const handleLogin = async () => {
-    // Giriş alanları kontrolü
+  
     if (!email || !password) {
       Alert.alert("Hata", "Email ve şifre zorunludur.");
       return;
     }
 
     try {
-      // API çağrısı
+    
       const res = await api.post("/Auth/student-login", {
         email,
         password,
@@ -29,8 +29,7 @@ export default function LoginScreen({ navigation }) {
 
         await saveToken(token);
         Alert.alert("Başarılı", "Giriş başarılı!");
-        
-        // Başarılı öğrenci girişi: Global durumu güncelle ve AppNavigator'a geç
+
         signIn(token); 
       }
     } catch (err) {
@@ -65,9 +64,7 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.buttonText}>Giriş Yap</Text>
       </TouchableOpacity>
 
-      {/* --- YÖNLENDİRME BUTONLARI --- */}
-      
-      {/* 1. ADMIN GİRİŞİ BUTONU */}
+    
       <TouchableOpacity 
         style={styles.linkButton} 
         onPress={() => navigation.navigate("AdminLoginScreen")}
@@ -75,10 +72,10 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.adminButtonText}>Yönetici Girişi</Text>
       </TouchableOpacity>
 
-      {/* 🚨 YENİ: KAYIT OL BUTONU */}
+    
       <TouchableOpacity 
         style={styles.linkButton} 
-        // Lütfen "StudentRegisterScreen" navigasyon adının doğruluğunu kontrol edin.
+  
         onPress={() => navigation.navigate("StudentRegisterScreen")} 
       >
         <Text style={styles.registerButtonText}>Hesabın yok mu? Kayıt Ol</Text>
@@ -121,19 +118,19 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
-  // Ortak stil eklendi (Admin ve Kayıt butonu için)
+
   linkButton: {
     padding: 5,
     marginTop: 15,
     alignItems: "center",
   },
-  // ADMIN BUTON STİLİ
+ 
   adminButtonText: {
     color: "#ffc107", 
     fontSize: 14,
     textDecorationLine: 'underline',
   },
-  // 🚨 YENİ: KAYIT BUTON STİLİ
+ 
   registerButtonText: {
     color: "#6c47ff", // Ana buton rengini kullan
     fontSize: 14,

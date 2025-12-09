@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-// SafeAreaView, kaydırma alanını cihaz çentiği (notch) altına kadar genişletir
+
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, SafeAreaView } from "react-native"; 
 import { api } from "../api/api";
-import { useAuth } from "../context/AuthContext"; // Context Hook'u import edildi
+import { useAuth } from "../context/AuthContext"; 
 
 export default function HomeScreen({ navigation }) {
-  // Tüm Hook'lar bileşenin en üstünde çağrılmalıdır.
+
   const [projects, setProjects] = useState([]);
   const [appliedIds, setAppliedIds] = useState([]);
   const [studentStatus, setStudentStatus] = useState(null);
@@ -133,24 +133,23 @@ export default function HomeScreen({ navigation }) {
       </View>
     );
   };
-  
-  // ANA RETURN BLOKU
+ 
   return (
-    // SafeAreaView kullanın ve kaydırmayı kapsayan View'i kaldırın
+  
     <SafeAreaView style={styles.safeArea}>
 
       <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
         <Text style={{ color: "#ff5555", fontSize: 16 }}>Çıkış Yap</Text>
       </TouchableOpacity>
 
-      {/* FlatList'in kendisi kaydırmayı yönetir. */}
+     
       <FlatList
         data={projects}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderProject}
-        // Tüm listenin etrafına padding ekleyin
+   
         contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 10 }}
-        // FlatList'in kalan dikey alanı doldurmasını sağlayın
+       
         style={{ flex: 1 }} 
       />
       
@@ -159,15 +158,14 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  // Yeni tanım: Ana View yerine SafeAreaView için flex: 1
+
   safeArea: { 
     flex: 1,
     backgroundColor: "#0d0d0d",
   },
-  // Eski container stili yerine kullanılmayacaktır
+
   container: {
-    // flex: 1,
-    // backgroundColor: "#0d0d0d",
+  
   },
   card: {
     backgroundColor: "#1a1a1a",

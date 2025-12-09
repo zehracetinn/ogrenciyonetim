@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Alert } from "react-native";
-// import AsyncStorage from "@react-native-async-storage/async-storage"; // Artık Context ve Interceptor kullandığımız için gerek yok
-// import api from "../services/api"; // Servisler yerine merkezi api.js'i kullanın
-import { api } from "../api/api"; // Merkezi Axios Instance
-import { useAuth } from "../context/AuthContext"; // Oturum yönetimi için
+
+import { api } from "../api/api"; 
+import { useAuth } from "../context/AuthContext"; 
 
 
 export default function StudentProfileScreen() {
@@ -11,7 +10,7 @@ export default function StudentProfileScreen() {
   const [applicationsCount, setApplicationsCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Context'ten signOut fonksiyonunu alın
+
   const { signOut } = useAuth(); 
 
   useEffect(() => {
@@ -19,8 +18,7 @@ export default function StudentProfileScreen() {
   }, []);
 
   const loadData = async () => {
-    // Token kontrolü ve yönlendirme mantığı artık Context tarafından yönetilir.
-    // Başarısız isteklerde 401 hatası alırız.
+
     
     await Promise.all([
       fetchProfile(),
@@ -33,13 +31,13 @@ export default function StudentProfileScreen() {
   const handleError = (err) => {
     console.log("Profil bilgisi çekilemedi:", err.response?.status, err);
     
-    // Eğer yetkilendirme hatasıysa (Örn: 401 Unauthorized), kullanıcıyı uyarıp çıkış yap
+  
     if (err.response?.status === 401 || err.response?.status === 403) {
         Alert.alert(
             "Oturum Hatası", 
             "Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın."
         );
-        signOut(); // Global olarak çıkış yap ve Login ekranına yönlendir.
+        signOut(); 
         return true; 
     }
     return false;
@@ -47,7 +45,7 @@ export default function StudentProfileScreen() {
 
   const fetchProfile = async () => {
     try {
-      // Artık token'ı headers içinde manuel göndermiyoruz, Axios Interceptor (api.js) yapıyor.
+     
       const res = await api.get("/student/profile"); 
 
       if (res.status === 200) setProfile(res.data);
@@ -58,7 +56,7 @@ export default function StudentProfileScreen() {
 
   const fetchApplicationsCount = async () => {
     try {
-      // Artık token'ı headers içinde manuel göndermiyoruz.
+
       const res = await api.get("/student/active-applications-count"); 
 
       if (res.status === 200) setApplicationsCount(res.data.count ?? res.data);

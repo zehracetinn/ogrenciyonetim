@@ -8,16 +8,15 @@ import {
   Alert,
   ActivityIndicator, 
 } from "react-native";
-import { api } from "../api/api"; // Ortak api bağlantısı
+import { api } from "../api/api"; 
 import Icon from 'react-native-vector-icons/Ionicons'; 
-import { useAuth } from "../context/AuthContext"; // ⬅️ Context'i içeri aktarın
+import { useAuth } from "../context/AuthContext"; 
 
 export default function AdminLoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  
-  // Context'ten adminSignIn fonksiyonunu alın
+
   const { adminSignIn } = useAuth(); 
 
   const goBack = () => {
@@ -33,9 +32,9 @@ export default function AdminLoginScreen({ navigation }) {
     try {
       setLoading(true);
 
-      // DTO uyumluluğu ile API çağrısı
+
       const res = await api.post("/Auth/admin-login", { 
-        UserName: email, // Back-end DTO'su ile eşleşmesi için düzeltildi
+        UserName: email, 
         Password: password, 
       });
 
@@ -48,11 +47,8 @@ export default function AdminLoginScreen({ navigation }) {
 
       Alert.alert("Başarılı", "Admin olarak giriş yapıldı!");
 
-      // ✅ KRİTİK DÜZELTME: Tüm yetki işini Admin Context'e devredin.
-      // Bu, App.jsx'teki kök navigasyonu otomatik olarak AdminTabs'e çevirecektir.
       adminSignIn(token); 
-      
-      // NOT: Bu noktadan sonra navigation.replace("AdminTabs") çağrısı YAPILMAMALIDIR.
+   
 
     } catch (err) {
       let message = "Sunucuya erişim sağlanamıyor veya yetkilendirme başarısız.";
@@ -78,7 +74,7 @@ export default function AdminLoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
       
-      {/* ⬅️ Geri Dön Butonu */}
+  
       <TouchableOpacity onPress={goBack} style={styles.backButton}>
         <Icon name="arrow-back-outline" size={30} color="#ffc107" />
       </TouchableOpacity>

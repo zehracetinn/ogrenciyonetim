@@ -1,45 +1,38 @@
 import { useEffect, useState } from "react";
 
-// =========================================================================================
-// === LAYOUT (RESİM STİLİNE UYGUN SADELEŞTİRİLDİ) ===
-// =========================================================================================
 
-// Layout: Sadece İçerik Alanı (Tam Genişlik) - Arkaplan Vurgusu KALDIRILDI
 const Layout = ({ children }) => (
-  // Sadece ana koyu arkaplan (bg-gray-950) bırakıldı.
+ 
   <div className="flex min-h-screen bg-gray-950 relative overflow-hidden">
-    {/* Eski Arkaplan Vurgusu kaldırıldı / Resimdeki stil daha düz */}
+
     
-    {/* İçerik Alanı: Tam genişlik */}
+  
     <div className="flex-1 p-8 text-white overflow-y-auto relative z-10">
       <div className="max-w-7xl mx-auto">{children}</div>
     </div>
   </div>
 );
 
-// =========================================================================================
-// === UI COMPONENTS (RESİM STİLİNE UYGUN GÜNCELLENDİ) ===
-// =========================================================================================
 
 const Card = ({ children, className = "" }) => (
-  // Kart Stili: Daha köşeli (rounded-md), daha sade koyu arka plan.
+  
   <div className={`bg-gray-900 border border-gray-800 rounded-md p-6 flex flex-col justify-between shadow-lg shadow-black/10 h-full transition-all duration-300 ${className}`}>{children}</div>
 );
 
 const Button = ({ children, onClick, className = "", variant = "primary", disabled = false }) => {
-  // Temel Buton Stili: Daha az kavisli (rounded-md) ve daha az parlak gölge.
+
   const base = "px-4 py-2 font-semibold transition-all duration-300 w-full text-center rounded-md shadow-md hover:shadow-lg hover:scale-[1.01] disabled:opacity-50 whitespace-nowrap";
   
   const variants = {
-    // 1. Primary (Yeni Proje Oluştur - Koyu Yeşil/Turkuaz Vurgu)
+    
     primary: "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-700/40", 
-    // 2. Danger (Sil - Koyu Kırmızı)
+ 
     danger: "bg-red-800 hover:bg-red-900 text-white shadow-red-900/40", 
     // 3. Secondary (İptal/Vazgeç - Koyu Gri)
     secondary: "bg-gray-700 hover:bg-gray-600 text-white shadow-gray-800/40",
     // 4. Warning (Düzenle - Koyu Mavi/Mor, daha sade)
     warning: "bg-indigo-800 hover:bg-indigo-700 text-white shadow-indigo-900/40",
-    // 5. Info (Başvuruları Gör - Resimdeki Başvur butonuna yakın, Koyu Lacivert/Mavi)
+
     info: "bg-blue-800 hover:bg-blue-700 text-white shadow-blue-900/40", 
   };
   return (
@@ -50,7 +43,7 @@ const Button = ({ children, onClick, className = "", variant = "primary", disabl
 };
 
 const Badge = ({ children }) => (
-  // Badge Stili (Resimdeki süre ve teknoloji vurgusuna uygun koyu yeşil/sarımsı ton)
+  
   <span className="inline-block px-2 py-0.5 text-xs font-semibold text-yellow-400 bg-gray-800 border border-gray-700 rounded-full">
     {children}
   </span>
@@ -58,7 +51,7 @@ const Badge = ({ children }) => (
 
 const Dialog = ({ children, onClose }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-    {/* Dialog Kutusu Stili: Daha sade kenarlık */}
+  
     <div className="bg-gray-900 border border-gray-800 rounded-lg p-10 shadow-[0_0_50px_rgba(15,15,15,0.8)] w-full max-w-lg relative">
       {children}
       <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
@@ -76,7 +69,7 @@ const Input = ({ value, onChange, placeholder, type = "text" }) => (
     value={value}
     onChange={onChange}
     placeholder={placeholder}
-    // Input Stili: Koyu arka plan, yeşil odaklanma halkası (Resimdeki vurguya uygun)
+    
     className="w-full bg-gray-950 border border-gray-700 px-4 py-3 text-white placeholder-gray-500 rounded-md 
       focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-colors"
   />
@@ -87,21 +80,17 @@ const TextArea = ({ value, onChange, placeholder }) => (
     placeholder={placeholder}
     value={value}
     onChange={onChange}
-    // TextArea Stili: Koyu arka plan, yeşil odaklanma halkası
+
     className="w-full bg-gray-950 border border-gray-700 px-4 py-3 text-white placeholder-gray-500 h-32 rounded-md
       focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-colors"
   />
 );
 
-// =========================================================================================
-// === ADMIN PROJECTS PAGE (GÖRSEL GÜNCELLEMELER YAPILDI) ===
-// =========================================================================================
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Modal State Management
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState('create'); // 'create', 'edit', 'delete'
   const [projectIdToDelete, setProjectIdToDelete] = useState(null);
@@ -114,17 +103,15 @@ export default function Projects() {
     technologies: "",
   });
 
-  // Helper function to get token
+
   const getToken = () => localStorage.getItem("admin_token");
 
-  // Authentication check on load
   useEffect(() => {
     if (!localStorage.getItem("admin_token")) {
       window.location.replace("/admin-login"); 
     }
   }, []);
   
-  // Close and reset modal state
   const closeModals = () => {
     setShowModal(false);
     setProjectIdToDelete(null);
@@ -132,7 +119,7 @@ export default function Projects() {
     setForm({ id: null, name: "", description: "", durationWeeks: "", technologies: "" });
   };
 
-  // Modal open handlers
+ 
   const openCreateModal = () => {
     setForm({ id: null, name: "", description: "", durationWeeks: "", technologies: "" });
     setModalMode('create');
@@ -151,7 +138,6 @@ export default function Projects() {
     setShowModal(true);
   }
 
-  // === Projeleri Yükle ===
   async function loadProjects() {
     const token = getToken();
 
@@ -182,7 +168,6 @@ export default function Projects() {
     }
   }
 
-  // === Proje Kaydet/Güncelle ===
   async function saveProject() {
     const token = getToken();
     const isEdit = form.id !== null;
@@ -230,7 +215,7 @@ export default function Projects() {
     }
   }
 
-  // === Proje Silme Onayı ===
+
   async function deleteProjectConfirmed() {
     if (!projectIdToDelete) return;
 
@@ -257,7 +242,6 @@ export default function Projects() {
     }
   }
 
-  // İlk yükleme
   useEffect(() => {
     if (getToken()) {
         loadProjects();
@@ -266,7 +250,7 @@ export default function Projects() {
     }
   }, []);
 
-  // === Loading ekranı ===
+
   if (loading) {
     return (
       <Layout>
@@ -277,7 +261,7 @@ export default function Projects() {
     );
   }
 
-  // === Render ===
+  
   return (
     <Layout>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-12 gap-4">

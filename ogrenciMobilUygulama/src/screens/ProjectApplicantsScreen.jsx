@@ -1,4 +1,4 @@
-// src/screens/ProjectApplicantsScreen.jsx (NİHAİ VERSİYON - ID GÜVENLİK KONTROLÜ EKLENDİ)
+
 
 import React, { useEffect, useState } from "react";
 import {
@@ -43,7 +43,7 @@ export default function ProjectApplicantsScreen({ route, navigation }) {
     setLoading(true);
 
     try {
-      // Başvuranları yükleme API çağrısı
+     
       const res = await api.get(`/Projects/applications/${projectId}`);
 
       if (res.status === 401) {
@@ -64,7 +64,7 @@ export default function ProjectApplicantsScreen({ route, navigation }) {
     }
   }
 
-  // Onay/Red Fonksiyonu
+
   const updateStatus = async (applicationId, action) => {
     try {
       await api.put(`/Projects/applications/${applicationId}/${action}`);
@@ -79,7 +79,7 @@ export default function ProjectApplicantsScreen({ route, navigation }) {
     }
   };
   
-  // Öğrenci Kartı Render Fonksiyonu
+
   const renderApplicant = ({ item: a }) => {
     const student = a.student || {};
     const isPending = a.status === "Pending";
@@ -108,7 +108,7 @@ export default function ProjectApplicantsScreen({ route, navigation }) {
           Durum: {statusDisplay}
         </Text>
 
-        {/* --- BUTONLAR --- */}
+     
         {(a.status === 0 || a.status === "Pending") && (
             <View style={styles.buttonRow}>
                 <TouchableOpacity
@@ -127,11 +127,11 @@ export default function ProjectApplicantsScreen({ route, navigation }) {
             </View>
         )}
         
-        {/* Öğrenci Detay Butonu */}
+
         <TouchableOpacity 
             style={styles.detailButton}
             onPress={() => {
-                // 🚨 KRİTİK KONTROL: ID'yi önce a.studentId'den, sonra a.student?.id'den çekmeyi deneyin
+             
                 const idToNavigate = a.studentId || a.student?.id; 
                 
                 if (idToNavigate) {
@@ -141,7 +141,6 @@ export default function ProjectApplicantsScreen({ route, navigation }) {
                     Alert.alert("Hata", "Öğrenci ID'si mevcut değil.");
                 }
             }}
-            // ID yoksa butonu devre dışı bırakın
             disabled={!(a.studentId || a.student?.id)} 
         >
             <Text style={styles.btnText}>Öğrenci Detayı</Text>
@@ -193,7 +192,6 @@ const styles = StyleSheet.create({
   flatListContent: { paddingHorizontal: 5, paddingBottom: 20 },
   noDataText: { color: '#aaa', textAlign: 'center', marginTop: 50, fontSize: 16 },
   
-  // Kart Stilleri
   card: { backgroundColor: '#1a1a1a', padding: 15, borderRadius: 12, marginBottom: 15, borderWidth: 1, borderColor: '#333' },
   name: { color: "white", fontSize: 18, fontWeight: "bold" },
   info: { color: "#ccc", marginTop: 4 },

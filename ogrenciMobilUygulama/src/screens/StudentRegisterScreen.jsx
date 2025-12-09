@@ -1,4 +1,4 @@
-// src/screens/StudentRegisterScreen.jsx
+
 
 import React, { useState } from "react";
 import { 
@@ -13,25 +13,24 @@ import {
   SafeAreaView 
 } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { api } from "../api/api"; // Merkezi API import'u
-
+import { api } from "../api/api"; 
 export default function StudentRegisterScreen({ navigation }) {
   const [form, setForm] = useState({
     fullName: "",
-    studentNumber: "", // Web'deki karşılığı
+    studentNumber: "", 
     email: "",
     password: "",
     knownTechnologies: "",
   });
   const [loading, setLoading] = useState(false);
 
-  // Web'deki handleChange fonksiyonunun mobil karşılığı
+  
   const handleChange = (name, value) => {
     setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async () => {
-    // 1. Alan Kontrolü
+  
     if (!form.fullName || !form.studentNumber || !form.email || !form.password || !form.knownTechnologies) {
       Alert.alert("Hata", "Lütfen tüm alanları doldurunuz.");
       return;
@@ -40,7 +39,7 @@ export default function StudentRegisterScreen({ navigation }) {
     setLoading(true);
     
     try {
-      // 2. API Çağrısı (Merkezi api instance'ı kullanılarak)
+     
       const res = await api.post("/Auth/student-register", form);
 
       if (res.status === 200 || res.status === 201) {
@@ -49,11 +48,10 @@ export default function StudentRegisterScreen({ navigation }) {
           "Kayıt başarılı! Admin onayı sonrası giriş yapılabilir."
         );
         
-        // Kayıt başarılıysa Login ekranına yönlendir
+      
         navigation.navigate("LoginScreen"); 
       } else {
-        // Axios kullanıldığı için 4xx/5xx hatası doğrudan catch'e düşer. 
-        // Bu kısım teorik olarak gerekmez, ama API 200/201 dışında bir status kodu döndürürse diye bırakılabilir.
+       
         Alert.alert("Kayıt Başarısız", "Beklenmeyen bir hata oluştu.");
       }
     } catch (err) {

@@ -6,42 +6,40 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
-// AsyncStorage yerine Context kullanacağız
-// import AsyncStorage from "@react-native-async-storage/async-storage"; 
 
-// KRİTİK EKLENTİ: Global durumu yönetmek için useAuth'ı import edin
+
+
 import { useAuth } from "../context/AuthContext"; 
 
 export default function AdminDashboardScreen({ navigation }) {
   
-  // Context'ten signOut fonksiyonunu alın
+
   const { signOut } = useAuth(); 
 
   const logout = async () => {
-    // 🚨 KRİTİK DÜZELTME: navigation.replace() yerine signOut() kullanın.
-    // signOut(), hem token'ı temizler hem de App.jsx'in AuthNavigator'a dönmesini sağlar.
+  
     signOut(); 
     
-    // ⚠️ Manuel token temizleme ve navigation.replace çağrıları kaldırıldı.
+   
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Admin Paneli</Text>
 
-      {/* Öğrenciler - AdminTabs'teki Students Navigator Stack'ine yönlendirme */}
+     
       <TouchableOpacity
         style={styles.menuCard}
-        // Navigasyon, AdminTabs'teki sekme adını ("Öğrenciler") kullanır.
+
         onPress={() => navigation.navigate("Öğrenciler")} 
       >
         <Text style={styles.menuText}>👨‍🎓 Öğrenciler</Text>
       </TouchableOpacity>
 
-      {/* Projeler - AdminTabs'teki Projects Navigator Stack'ine yönlendirme */}
+   
       <TouchableOpacity
         style={styles.menuCard}
-        // Navigasyon, AdminTabs'teki sekme adını ("Projeler") kullanır.
+  
         onPress={() => navigation.navigate("Projeler")} 
       >
         <Text style={styles.menuText}>📁 Projeler</Text>

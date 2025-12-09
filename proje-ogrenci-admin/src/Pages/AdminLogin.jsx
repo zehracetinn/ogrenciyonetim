@@ -6,9 +6,7 @@ export default function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ================================================================
-  // TOKEN DOĞRULAMA (Sayfa açıldığında çalışır)
-  // ================================================================
+
   useEffect(() => {
     const token = localStorage.getItem("admin_token");
 
@@ -30,9 +28,6 @@ export default function AdminLogin() {
   }, []);
 
 
-  // ================================================================
-  // LOGIN SUBMIT
-  // ================================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -46,7 +41,7 @@ export default function AdminLogin() {
       });
 
       if (!response.ok) {
-        // Hata kodu 401 veya 403 ise 'err' değeri boş gelebilir, bu yüzden bir fallback mesajı kullanılır.
+       
         const err = await response.text();
         setError(err || "Kullanıcı adı veya şifre hatalı.");
         setIsLoading(false);
@@ -55,7 +50,7 @@ export default function AdminLogin() {
 
       const data = await response.json();
 
-      // === TOKEN KAYDET ===
+  
       localStorage.setItem("admin_token", data.token);
 
       console.log("Admin login başarılı. Token:", data.token);
@@ -71,9 +66,6 @@ export default function AdminLogin() {
   };
 
 
-  // ================================================================
-  // YENİ STİLDE UI (2. Resimdeki stile uyarlandı)
-  // ================================================================
   return (
     // Ana kapsayıcı: Tamamen koyu arkaplan (bg-black)
     <div className="min-h-screen w-full flex items-center justify-center bg-black font-sans text-white">

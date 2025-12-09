@@ -7,14 +7,14 @@ import {
   TextInput,
   StyleSheet,
   Alert,
-  SafeAreaView // SafeAreaView eklenmesi önerilir
+  SafeAreaView 
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// ✨ Gerekli İçe Aktarmalar
-import { useAuth } from "../context/AuthContext"; // Global oturum yönetimi için
-import Icon from 'react-native-vector-icons/Ionicons'; // Çıkış butonu ikonu için
 
-export default function StudentProjectsScreen({ navigation }) { // navigation prop'u eklendi
+import { useAuth } from "../context/AuthContext"; 
+import Icon from 'react-native-vector-icons/Ionicons';
+
+export default function StudentProjectsScreen({ navigation }) { 
   const [projects, setProjects] = useState([]);
   const [studentStatus, setStudentStatus] = useState(null);
   const [applicationsCount, setApplicationsCount] = useState(0);
@@ -25,16 +25,14 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
   const [availableTechs, setAvailableTechs] = useState([]);
   const [techFilter, setTechFilter] = useState("all");
 
-  // Context'ten signOut fonksiyonunu alın
+
   const { signOut } = useAuth(); 
 
   useEffect(() => {
     loadData();
   }, []);
   
-  // -----------------------------
-  // ✨ YENİ: ÇIKIŞ YAP FONKSİYONU
-  // -----------------------------
+  
   const handleLogout = () => {
     Alert.alert(
       "Çıkış Yap",
@@ -47,9 +45,9 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
         {
           text: "Çıkış Yap",
           onPress: async () => {
-            // AsyncStorage'dan token'ı silin (Gerekirse)
+           
             await AsyncStorage.removeItem("studentToken"); 
-            // Context üzerinden global olarak çıkış yap (Login ekranına yönlendirir)
+            
             signOut(); 
           },
           style: "destructive"
@@ -57,14 +55,12 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
       ]
     );
   };
-  // -----------------------------
+
 
   const loadData = async () => {
     const token = await AsyncStorage.getItem("studentToken");
     if (!token) return;
 
-    // Not: Normalde bu fetch'leri merkezi api instance'ı ile yapmalısınız.
-    // Ancak mevcut kodunuz fetch kullandığı için fetch ile devam ediyorum.
 
     fetchProfile(token);
     fetchProjects(token);
@@ -72,11 +68,7 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
     fetchCount(token);
   };
 
-  // ... (fetchProfile, fetchProjects, fetchApplications, fetchCount, applyProject fonksiyonları aynı kalır)
 
-  // -----------------------------
-  // 1) PROFİL DURUMU
-  // -----------------------------
   const fetchProfile = async (token) => {
     const res = await fetch("http://localhost:5297/api/student/profile", {
       headers: { Authorization: `Bearer ${token}` },
@@ -86,7 +78,7 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
       const data = await res.json();
       setStudentStatus(data.status);
     } else {
-      // Hata durumunda da signOut'ı tetiklemek iyi bir güvenlik önlemidir.
+    
       if (res.status === 401) {
           signOut(); 
       }
@@ -94,9 +86,6 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
     }
   };
 
-  // -----------------------------
-  // 2) TÜM PROJELER
-  // -----------------------------
   const fetchProjects = async (token) => {
     const res = await fetch("http://localhost:5297/api/projects/list", {
       headers: { Authorization: `Bearer ${token}` },
@@ -106,7 +95,6 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
       const data = await res.json();
       setProjects(data);
 
-      // Teknoloji listesi çıkar
       const techs = data.flatMap((p) =>
         p.technologies ? p.technologies.split(",").map((x) => x.trim()) : []
       );
@@ -116,9 +104,7 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
     }
   };
 
-  // -----------------------------
-  // 3) BAŞVURULAN PROJELER
-  // -----------------------------
+
   const fetchApplications = async (token) => {
     const res = await fetch("http://localhost:5297/api/student/applications", {
       headers: { Authorization: `Bearer ${token}` },
@@ -133,9 +119,7 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
     }
   };
 
-  // -----------------------------
-  // 4) TOPLAM BAŞVURU SAYISI (max 3)
-  // -----------------------------
+ 
   const fetchCount = async (token) => {
     const res = await fetch(
       "http://localhost:5297/api/student/active-applications-count",
@@ -152,9 +136,7 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
     }
   };
 
-  // -----------------------------
-  // 5) BAŞVURU YAP
-  // -----------------------------
+
   const applyProject = async (id) => {
     const token = await AsyncStorage.getItem("studentToken");
     if (!token) return;
@@ -196,8 +178,7 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
     }
   };
 
-  // -----------------------------
-  // 6) ARAMA + FİLTRELEME
+
   // -----------------------------
   const filtered = useMemo(() => {
     return projects.filter((p) => {
@@ -305,11 +286,11 @@ export default function StudentProjectsScreen({ navigation }) { // navigation pr
 }
 
 const styles = StyleSheet.create({
-  // Genel konteyner stilini SafeAreaView'e taşıdık
+ 
   container: { flex: 1, backgroundColor: "#0d0d0d" }, 
   contentContainer: { padding: 15 },
 
-  // ✨ YENİ: Başlık ve Buton için Header Stili
+
   header: {
     padding: 15,
     paddingTop: 10,
@@ -319,7 +300,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0d0d0d",
   },
   
-  // ✨ YENİ: Çıkış Butonu Stilleri
+
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',

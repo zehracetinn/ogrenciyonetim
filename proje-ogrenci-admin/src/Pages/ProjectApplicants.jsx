@@ -15,9 +15,7 @@ export default function ProjectApplicants() {
 
   const getToken = () => localStorage.getItem("admin_token");
 
-  // ========================================
-  // BAŞVURANLARI YÜKLEME
-  // ========================================
+
   async function loadApplicants() {
     const token = getToken();
 
@@ -56,9 +54,7 @@ export default function ProjectApplicants() {
     loadApplicants();
   }, [projectId]);
 
-  // ========================================
-  // ONAY – RED
-  // ========================================
+  
   async function approve(applicationId) {
     const token = getToken();
 
@@ -87,9 +83,6 @@ export default function ProjectApplicants() {
     loadApplicants();
   }
 
-  // ========================================
-  // LOADING
-  // ========================================
   if (loading) {
     return (
       <div className="text-zinc-300 animate-pulse">

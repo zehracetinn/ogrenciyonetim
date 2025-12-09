@@ -5,15 +5,14 @@ import { Card } from "@/components/card";
 export default function StudentProjects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [studentStatus, setStudentStatus] = useState(null); // null, 0: Pending, 1: Approved, 2: Rejected
+  const [studentStatus, setStudentStatus] = useState(null); 
   const [token, setToken] = useState(null);
   
-  // Arama ve Filtre State'leri
+  
   const [searchText, setSearchText] = useState("");
   const [durationFilter, setDurationFilter] = useState("all"); 
   const [techFilter, setTechFilter] = useState("all"); 
   
-  // Başvuru Yönetimi State'leri
   const [applicationsCount, setApplicationsCount] = useState(0); 
   const [appliedIds, setAppliedIds] = useState([]); 
   const [availableTechnologies, setAvailableTechnologies] = useState([]);
@@ -24,7 +23,7 @@ export default function StudentProjects() {
     setToken(storedToken);
 
     if (storedToken) {
-        // Gerekli tüm verileri çek
+        
         checkStudentStatus(storedToken);
         fetchProjects(storedToken); 
         checkApplicationLimit(storedToken);
@@ -34,7 +33,6 @@ export default function StudentProjects() {
     }
   }, []);
   
-  // Öğrencinin profil durumunu kontrol eder (DÜZELTİLDİ: /api/student/profile)
   const checkStudentStatus = async (current_token) => {
     try {
         const res = await fetch("http://localhost:5297/api/student/profile", {
@@ -46,15 +44,13 @@ export default function StudentProjects() {
             setStudentStatus(data.status); 
         } else {
             console.error("Profil çekilemedi:", res.status);
-            setStudentStatus(2); // Hata durumunda onaylanmamış kabul ediyoruz
+            setStudentStatus(2);
         }
     } catch (e) {
         console.error("Profil durumu çekilirken hata:", e);
         setStudentStatus(2);
     }
   }
-
-  // Öğrencinin aktif başvuru sayısını kontrol eder (DÜZELTİLDİ: /api/student/active-applications-count)
   const checkApplicationLimit = async (current_token) => {
     try {
         const res = await fetch("http://localhost:5297/api/student/active-applications-count", {
@@ -72,7 +68,6 @@ export default function StudentProjects() {
     }
   }
 
-  // Öğrencinin başvurmuş olduğu projelerin ID'lerini çeker (DÜZELTİLDİ: /api/student/applications)
   const fetchAppliedProjects = async (current_token) => {
     try {
         const res = await fetch("http://localhost:5297/api/student/applications", {
@@ -91,7 +86,6 @@ export default function StudentProjects() {
   }
 
 
-  // Proje listesi API'si aynı kaldı
   const fetchProjects = async (current_token) => {
     setLoading(true);
 
@@ -114,21 +108,20 @@ export default function StudentProjects() {
     setLoading(false);
   };
 
-  // Projeye başvurma (DÜZELTİLDİ: /api/student/apply-project)
+ 
   const applyToProject = async (projectId) => {
-    // 1. Onay Kontrolü
+  
     if (studentStatus !== 1) {
         alert("Başvuru yapabilmek için hesabınızın yönetici tarafından onaylanmış olması gerekmektedir.");
         return;
     }
     
-    // 2. 3 Proje Sınırı Kontrolü
+
     if (applicationsCount >= 3) {
         alert("Aynı anda en fazla 3 projeye başvuru yapabilirsiniz. Mevcut başvurularınızı tamamlamadan yeni başvuru yapamazsınız.");
         return;
     }
     
-    // 3. Daha önce başvurulmuş mu?
     if (appliedIds.includes(projectId)) {
         alert("Bu projeye zaten başvurunuz bulunmaktadır.");
         return;
@@ -157,13 +150,13 @@ export default function StudentProjects() {
 
     alert("Başvuru başarıyla gönderildi!");
     
-    // Başvuru başarılıysa local state'leri güncelle
+    
     fetchProjects(token); 
     checkApplicationLimit(token); 
     setAppliedIds(prev => [...prev, projectId]);
   };
   
-  // Arama ve filtreleme mantığı
+  
   const filteredProjects = useMemo(() => {
     return projects.filter(project => {
       const matchesSearch = 
@@ -193,10 +186,10 @@ export default function StudentProjects() {
   const isApproved = studentStatus === 1;
   const applicationLimitReached = applicationsCount >= 3;
 
-  // Buton metni mantığı: Başvurulmuşsa veya hesap onaylı değilse "Onay Bekleniyor"
+  
   const getButtonText = (applied, approved, limitReached) => {
       if (applied) return "Onay Bekleniyor"; 
-      if (!approved) return "Onay Beklenmiyor"; // Hesabı onaylı değilse
+      if (!approved) return "Onay Beklenmiyor"; 
       if (limitReached) return "Limit Dolu"; 
       return "Başvur"; 
   };
@@ -208,21 +201,19 @@ export default function StudentProjects() {
     <div className="text-white">
       <h1 className="text-3xl font-bold mb-6">Tüm Projeler</h1>
 
-      {/* Onaylanmamış kullanıcılar için uyarı mesajı */}
       {!isApproved && (
         <div className="p-4 bg-red-800/30 text-red-300 border border-red-700 rounded-lg mb-6">
             Projelere başvurabilmek için hesabınızın yönetici tarafından **onaylanmış** olması gerekmektedir. Lütfen profil durumunuzu kontrol edin.
         </div>
       )}
       
-      {/* Başvuru Limiti Bilgisi */}
+    
       {isApproved && (
         <div className={`p-3 text-sm rounded-lg mb-6 ${applicationLimitReached ? 'bg-yellow-800/30 text-yellow-300 border border-yellow-700' : 'bg-green-800/30 text-green-300 border border-green-700'}`}>
             Mevcut Başvuru Sayınız: **{applicationsCount} / 3**.
         </div>
       )}
 
-      {/* 🌟 Arama ve Filtreleme Alanı 🌟 */}
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <input
           type="text"
@@ -254,7 +245,7 @@ export default function StudentProjects() {
         </select>
       </div>
 
-      {/* Proje Listesi */}
+  
       {filteredProjects.length === 0 && (
         <div className="p-4 bg-neutral-900 text-neutral-400 rounded-lg">
           Filtre kriterlerinize uyan proje bulunamadı.

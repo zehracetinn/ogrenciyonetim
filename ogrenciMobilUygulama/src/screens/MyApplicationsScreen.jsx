@@ -14,8 +14,6 @@ export default function MyApplicationsScreen() {
     try {
       const res = await api.get("/student/my-projects");
 
-      // DTO ile gelmiyorsa API listesi şöyle olmalı:
-      // { id, project: { name, description }, status, applyDate }
       setApplications(res.data);
     } catch (e) {
       console.log("Başvurular çekilirken hata:", e);

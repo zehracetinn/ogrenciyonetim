@@ -1,4 +1,4 @@
-// src/screens/NewProjectScreen.jsx (DÜZELTİLMİŞ NİHAİ VERSİYON)
+
 
 import React, { useState } from "react";
 import {
@@ -8,28 +8,28 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  ActivityIndicator, // Loading durumu için eklendi
+  ActivityIndicator,
   SafeAreaView
 } from "react-native";
-// import AsyncStorage from "@react-native-async-storage/async-storage"; // Artık gerek yok
-import { api } from "../api/api"; // ⬅️ Merkezi API'yi kullan
-import Icon from 'react-native-vector-icons/Ionicons'; // Opsiyonel: Geri butonu için
+
+import { api } from "../api/api"; 
+import Icon from 'react-native-vector-icons/Ionicons'; 
 
 export default function NewProjectScreen({ navigation }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [technologies, setTechnologies] = useState("");
   const [durationWeeks, setDurationWeeks] = useState("");
-  const [loading, setLoading] = useState(false); // Loading durumu eklendi
+  const [loading, setLoading] = useState(false); 
 
-  // 🚨 Yeni: Yetkilendirme hatasında yönlendirme fonksiyonu
+
   const handleAuthError = () => {
     Alert.alert("Oturum Süresi Doldu", "Lütfen tekrar giriş yapınız.");
     navigation.replace("AdminLoginScreen"); 
   };
 
   const createProject = async () => {
-    if (!name || !description || !durationWeeks || !technologies) { // Teknolojiler de zorunlu varsayıldı
+    if (!name || !description || !durationWeeks || !technologies) { 
       Alert.alert("Hata", "Lütfen tüm zorunlu alanları doldurunuz.");
       return;
     }
@@ -44,21 +44,19 @@ export default function NewProjectScreen({ navigation }) {
     };
 
     try {
-      // 🚀 MERKEZİ API KULLANIMI: Token otomatik gönderilir.
-      // API endpoint'i kontrol edildi: Sadece /Projects veya /admin/projects olmalı.
+     
       const res = await api.post("/Projects", body); 
 
       if (res.status === 201 || res.status === 200) {
         Alert.alert("Başarılı", "Yeni proje oluşturuldu!");
         navigation.goBack(); // Proje listesine dön
       } else {
-        // API 4xx/5xx döndürürse (Bu satır normalde Axios ile tetiklenmez, catch'e düşer)
+      
         Alert.alert("Hata", res.data?.message || "Proje eklenemedi!");
       }
     } catch (err) {
       console.error("Proje oluşturma hatası:", err);
-      
-      // 🚨 KRİTİK HATA YÖNETİMİ
+
       if (err.response && err.response.status === 401) {
           handleAuthError();
           return;

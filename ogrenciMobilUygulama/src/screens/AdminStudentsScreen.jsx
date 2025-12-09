@@ -1,4 +1,3 @@
-// src/screens/AdminStudentsScreen.jsx (ÖĞRENCİ YÖNETİMİ NİHAİ VERSİYON)
 
 import React, { useEffect, useState, useMemo } from "react";
 import {
@@ -13,21 +12,20 @@ import {
   SafeAreaView
 } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { api } from "../api/api"; // Ortak API bağlantısı
+import { api } from "../api/api"; 
 
-// Web'deki status map'in mobil karşılığı
 const STATUS_MAP = {
-  All: null, // Filtre için
+  All: null, 
   Pending: 0,
   Approved: 1,
   Rejected: 2,
 };
 
-// Durum rengi haritası
+
 const STATUS_COLORS = {
-  0: { bg: '#ffc107', text: '#000' }, // Pending (Sarı)
-  1: { bg: '#28a745', text: '#fff' }, // Approved (Yeşil)
-  2: { bg: '#dc3545', text: '#fff' }, // Rejected (Kırmızı)
+  0: { bg: '#ffc107', text: '#000' }, 
+  1: { bg: '#28a745', text: '#fff' }, 
+  2: { bg: '#dc3545', text: '#fff' }, 
 };
 
 export default function AdminStudentsScreen({ navigation }) {
@@ -36,7 +34,6 @@ export default function AdminStudentsScreen({ navigation }) {
   const [activeFilter, setActiveFilter] = useState("Pending"); 
   const [search, setSearch] = useState("");
 
-  // 🚨 Yeni Hata Yönlendirme Fonksiyonu
   const handleAuthError = () => {
     Alert.alert("Oturum Süresi Doldu", "Lütfen tekrar giriş yapınız.");
     navigation.replace("AdminLoginScreen"); 
@@ -61,7 +58,7 @@ export default function AdminStudentsScreen({ navigation }) {
       }
       setStudents(response.data);
     } catch (e) {
-      // Axios hata nesnesi üzerinden 401 kontrolü
+     
       if (e.response && e.response.status === 401) {
           handleAuthError();
           return;
@@ -73,7 +70,6 @@ export default function AdminStudentsScreen({ navigation }) {
     }
   }
 
-  // ONAYLAMA FONKSİYONU
   async function approve(id) {
     try {
         const res = await api.put(`/Admin/students/${id}/approve`);
@@ -92,7 +88,6 @@ export default function AdminStudentsScreen({ navigation }) {
     }
   }
 
-  // REDDETME FONKSİYONU
   async function reject(id) {
     try {
         const res = await api.put(`/Admin/students/${id}/reject`);
@@ -111,17 +106,16 @@ export default function AdminStudentsScreen({ navigation }) {
     }
   }
   
-  // Arama ve Filtreleme Mantığı (Webdeki gibi)
+
   const filteredStudents = useMemo(() => {
     let list = [...students];
     const statusValue = STATUS_MAP[activeFilter];
 
-    // Durum Filtreleme
     if (activeFilter !== "All") {
       list = list.filter((s) => s.status === statusValue);
     }
 
-    // Arama Filtreleme
+
     if (search.trim() !== "") {
       const t = search.toLowerCase();
       list = list.filter(
@@ -134,10 +128,9 @@ export default function AdminStudentsScreen({ navigation }) {
     return list;
   }, [students, activeFilter, search]);
 
-  // Öğrenci Kartı Render Fonksiyonu
   const renderStudent = ({ item: s }) => {
     const statusInfo = s.status !== undefined ? STATUS_COLORS[s.status] : {};
-    // Durum etiketini STATUS_MAP'ten doğru şekilde çevirir
+ 
     const statusLabel = s.status !== undefined 
         ? Object.keys(STATUS_MAP).find(key => STATUS_MAP[key] === s.status) 
         : "Bilinmiyor";
@@ -178,7 +171,7 @@ export default function AdminStudentsScreen({ navigation }) {
             </TouchableOpacity>
         </View>
         
-        {/* Detay Görüntüleme Butonu (StudentDetailScreen'e yönlendirir) */}
+   
         <TouchableOpacity 
             style={styles.detailButton} 
             onPress={() => navigation.navigate("StudentDetailScreen", { studentId: s.id })}
@@ -189,7 +182,7 @@ export default function AdminStudentsScreen({ navigation }) {
     );
   };
 
-  // Filtre Sekmeleri
+
   const FilterTabs = () => (
     <View style={styles.filterContainer}>
       {["All", "Pending", "Approved", "Rejected"].map((filter) => {
@@ -209,7 +202,6 @@ export default function AdminStudentsScreen({ navigation }) {
     </View>
   );
 
-  // ANA RENDER
   if (loading) {
     return <ActivityIndicator size="large" color="#ffc107" style={styles.loader} />;
   }
@@ -218,7 +210,7 @@ export default function AdminStudentsScreen({ navigation }) {
     <SafeAreaView style={styles.safeArea}>
       <Text style={styles.screenTitle}>Öğrenci Yönetimi</Text>
       
-      {/* Arama Input */}
+      
       <View style={styles.searchContainer}>
         <Icon name="search-outline" size={20} color="#777" style={styles.searchIcon} />
         <TextInput

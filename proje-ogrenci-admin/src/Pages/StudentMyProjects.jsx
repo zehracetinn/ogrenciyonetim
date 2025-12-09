@@ -5,7 +5,7 @@ export default function StudentMyProjects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Doğru token anahtarı
+ 
   const token = localStorage.getItem("studentToken");
 
   useEffect(() => {

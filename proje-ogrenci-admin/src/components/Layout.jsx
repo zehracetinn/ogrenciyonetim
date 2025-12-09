@@ -4,7 +4,7 @@ import { useEffect } from "react";
 export default function Layout() {
   const navigate = useNavigate();
 
-  // Admin guard
+
   useEffect(() => {
     if (!localStorage.getItem("admin_token")) {
       navigate("/admin-login");

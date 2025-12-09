@@ -1,27 +1,25 @@
-// src/screens/StudentDetailScreen.jsx (ROUTE PARAMS MANTIĞINA GÖRE GÜNCELLENMİŞ VERSİYON)
+
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { api } from "../api/api"; // Ortak API import'u
 
-// Webdeki Status Map'i mobil için de kullanın
+
 const STATUS_MAP = { 0: "Beklemede", 1: "Onaylandı", 2: "Reddedildi", "Pending": "Beklemede", "Approved": "Onaylandı", "Rejected": "Reddedildi" };
 const STATUS_COLORS = { 0: "#ffc107", 1: "#28a745", 2: "#dc3545", "Pending": "#ffc107", "Approved": "#28a745", "Rejected": "#dc3545" };
 
 export default function StudentDetailScreen({ route, navigation }) {
-    // ⭐ İKİNCİ KOD MANTIĞI: Veriyi doğrudan route.params'dan al
+   
     const studentData = route.params?.student; 
     
-    const [isUpdating, setIsUpdating] = useState(false); // İşlem sırasındaki loading durumu
+    const [isUpdating, setIsUpdating] = useState(false); 
 
-    // Yetkilendirme hatasında Admin girişine yönlendirir
+  
     const handleAuthError = () => {
         Alert.alert("Oturum Süresi Doldu", "Lütfen tekrar giriş yapınız.");
-        // navigation.replace("AdminLoginScreen"); // Gerçek projede aktif edin
+       
     };
-
-    // Merkezi Hata Yönetimi Fonksiyonu
     const handleApiError = (e, customMessage) => {
         const status = e.response?.status;
         console.log("API ERROR:", status, e.response?.data || e.message);
@@ -35,17 +33,17 @@ export default function StudentDetailScreen({ route, navigation }) {
         return false; 
     };
 
-    // ✨ TEKİL FONKSİYON: Durum Güncelleme (API'a gönderir)
+
     const updateStudentStatus = async (action) => {
         if (!studentData || isUpdating) return;
 
-        const studentId = studentData.id; // ID'yi student objesinden almalıyız
+        const studentId = studentData.id; 
         if (!studentId) {
             Alert.alert("Hata", "Öğrenci ID'si eksik.");
             return;
         }
 
-        const endpoint = `/Admin/students/${studentId}/${action}`; // action: 'approve' veya 'reject'
+        const endpoint = `/Admin/students/${studentId}/${action}`; 
         const successMessage = action === 'approve' ? "Öğrenci hesabı onaylandı." : "Öğrenci hesabı reddedildi.";
         const failureMessage = action === 'approve' ? "Onaylama başarısız." : "Reddetme başarısız.";
 
@@ -56,8 +54,6 @@ export default function StudentDetailScreen({ route, navigation }) {
             
             Alert.alert("Başarılı", successMessage);
             
-            // Başarılı işlem sonrası bir önceki ekrana dön
-            // ve listeyi yenilemek için muhtemelen bir refetch tetikle (örnek: goBack çağrısıyla)
             navigation.goBack(); 
 
         } catch (e) {
@@ -67,12 +63,9 @@ export default function StudentDetailScreen({ route, navigation }) {
         }
     };
 
-    // Arayüzde kullanılacak aksiyon fonksiyonları
     const approve = () => updateStudentStatus('approve');
     const reject = () => updateStudentStatus('reject');
 
-
-    // 🚨 KRİTİK KONTROL: Eğer studentData yoksa
     if (!studentData) {
         return (
             <View style={styles.container}>
@@ -83,8 +76,7 @@ export default function StudentDetailScreen({ route, navigation }) {
             </View>
         );
     }
-    
-    // Status değeri string (Pending/Approved) veya sayı (0/1/2) olabilir.
+
     const currentStatus = studentData.status;
     const isPending = currentStatus === "Pending" || currentStatus === 0;
 

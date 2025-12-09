@@ -5,12 +5,10 @@ export default function StudentProfile() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Token'ı state veya ref yerine burada okumak sorun yaratabilir. 
-  // Token'ın değişmesi durumunda useEffect'in tekrar çalışması için düzenliyoruz.
   const [token, setToken] = useState(localStorage.getItem("studentToken")); 
 
   useEffect(() => {
-    // Token yoksa girişe yönlendir
+   
     if (!token) {
         window.location.replace("/student/login");
         return;
@@ -28,7 +26,6 @@ export default function StudentProfile() {
       },
     });
     
-    // HATA DÜZELTME 1: 401/403 hatası kontrolü (API erişimini reddediyor)
     if (res.status === 401 || res.status === 403) {
         console.error("Profil çekilemedi (401/403). Token süresi dolmuş veya yetki yok.");
         localStorage.removeItem("studentToken");
@@ -38,8 +35,6 @@ export default function StudentProfile() {
         return;
     }
 
-    // HATA DÜZELTME 2: JSON okuma kontrolü
-    // API, 200 OK dışındaki durumlarda bazen boş yanıt döner.
     let data = null;
     try {
         data = await res.json();
@@ -76,7 +71,6 @@ export default function StudentProfile() {
 
       <Card className="bg-[#181818] border border-neutral-700 p-8 rounded-xl">
         
-        {/* Ad Soyad */}
         <div className="mb-4">
           <p className="text-neutral-400 text-sm">Ad Soyad</p>
           <p className="text-xl font-semibold text-white">{profile.fullName}</p>

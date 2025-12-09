@@ -1,19 +1,18 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-// useCallback ve useState kaldırıldı, orijinal basit hale döndürüldü.
+
 
 export default function StudentLayout() {
   const navigate = useNavigate();
 
-  // Öğrenci login değilse yönlendirme (Sadece tokenin varlığını kontrol eden basit kontrol)
+  
   useEffect(() => {
     const token = localStorage.getItem("studentToken");
     if (!token) navigate("/student/login");
-    // Uyarı: Bu basit kontrol, token geçersiz olsa bile kullanıcıyı hemen atmaz.
-    // Ancak en azından giriş yapabilmenizi sağlar.
+   
   }, [navigate]);
 
-  // Token kontrolü tamamlanmadan hızlıca içeriği göstermemek için
+
   if (!localStorage.getItem("studentToken")) {
       return (
           <div className="flex items-center justify-center min-h-screen bg-[#0f0f0f] text-neutral-400">

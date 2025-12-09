@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Check, X, Search, Filter, Hash, Mail } from "lucide-react";
 
-// Enum durumlarını dize yerine sayısal değerlerle eşleştiren haritalama
 const STATUS_MAP = {
   All: null,
   Pending: 0,
@@ -13,7 +12,7 @@ export default function Students() {
   const [students, setStudents] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
-  // Başlangıç filtresini "Bekleyenler" olarak ayarlamak daha mantıklıdır.
+ 
   const [activeFilter, setActiveFilter] = useState("Pending"); 
   const [search, setSearch] = useState("");
 
@@ -33,27 +32,26 @@ export default function Students() {
       const data = await response.json();
       setStudents(data);
       setLoading(false);
-      // Filtrelemeyi burada çağırıyoruz, böylece data yüklendikten sonra listelenir.
+      
       applyFilters(activeFilter, search, data); 
     } catch (e) {
-      // Önceki hatanın çözülmesini sağlayan güvenlik kontrolünü tutuyoruz
+      
       console.error("Öğrenci verileri yüklenirken hata oluştu:", e);
       setLoading(false);
     }
   }
 
-  // Veri setini doğrudan argüman olarak alacak şekilde güncellendi.
   function applyFilters(filter = activeFilter, query = search, data = students) {
     let list = [...data];
-    const statusValue = STATUS_MAP[filter]; // "Pending" -> 0, "Approved" -> 1, "Rejected" -> 2
+    const statusValue = STATUS_MAP[filter]; 
 
-    // Filtreleme mantığı: Sayısal değer üzerinden karşılaştırma yapılır.
+    
     if (filter !== "All") {
-      // s.status'ün sayı (number) olduğunu varsayarak karşılaştırma yapıyoruz
+      
       list = list.filter((s) => s.status === statusValue);
     }
 
-    // Arama mantığı
+   
     if (query.trim() !== "") {
       const t = query.toLowerCase();
       list = list.filter(
@@ -66,7 +64,6 @@ export default function Students() {
     setFiltered(list);
   }
 
-  // ONAYLAMA FONKSİYONU
   async function approve(id) {
     const token = localStorage.getItem("admin_token");
     const res = await fetch(`http://localhost:5297/api/Admin/students/${id}/approve`, {
@@ -80,7 +77,7 @@ export default function Students() {
     }
   }
 
-  // REDDETME FONKSİYONU
+  
   async function reject(id) {
     const token = localStorage.getItem("admin_token");
     const res = await fetch(`http://localhost:5297/api/Admin/students/${id}/reject`, {
@@ -102,7 +99,6 @@ export default function Students() {
     applyFilters(activeFilter, search);
   }, [activeFilter, search, students]);
 
-  // Yardımcı fonksiyon: Durum numarasından dize/stil üretir
   const getStatusInfo = (status) => {
     switch (status) {
       case 0: // Pending
@@ -116,9 +112,7 @@ export default function Students() {
     }
   };
 
-  // -----------------------
-  // LOADING EKRANI
-  // -----------------------
+
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center text-red-300 min-h-screen">
@@ -130,9 +124,7 @@ export default function Students() {
     );
   }
 
-  // -----------------------
-  // SAYFA İÇERİĞİ
-  // -----------------------
+  
   return (
     <div className="relative min-h-screen text-white font-sans pb-20 p-6 sm:p-10">
 
@@ -163,7 +155,7 @@ export default function Students() {
         </div>
       </div>
 
-      {/* Filtre Butonları */}
+      
       <div className="flex flex-wrap gap-2 mb-8 p-2 rounded-xl w-fit">
         {[
           { id: "All", label: "Tümü" },
@@ -175,7 +167,7 @@ export default function Students() {
 
              let className = "text-neutral-400 hover:text-white hover:bg-zinc-800";
              if (isActive) {
-                // Aktif filtre için durum bazlı renk vurgusu
+                
                 if (tab.id === "Pending") className = "bg-yellow-600/20 text-yellow-200 border border-yellow-500/30 font-semibold";
                 else if (tab.id === "Approved") className = "bg-green-600/20 text-green-200 border border-green-500/30 font-semibold";
                 else if (tab.id === "Rejected") className = "bg-red-600/20 text-red-200 border border-red-500/30 font-semibold";
@@ -205,14 +197,14 @@ export default function Students() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filtered.map((s) => {
-                const statusInfo = getStatusInfo(s.status); // Sayısal değeri dize ve renge çevirir
+                const statusInfo = getStatusInfo(s.status);
                 const isPending = s.status === 0; // 0 = Pending
                 const statusColor = statusInfo.color;
                 
                 return (
                   <div
                     key={s.id}
-                    // Kart stili, koyu tema ve kenarlık ile güncellendi
+                    
                     className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-2xl p-6 transition-all flex flex-col shadow-xl"
                   >
                     {/* ÜST */}
@@ -234,7 +226,7 @@ export default function Students() {
                       </div>
                     </div>
 
-                    {/* DURUM */}
+             
                     <div className="mb-6">
                       <span
                         className={`px-2.5 py-1 rounded-full text-xs border ${
@@ -249,7 +241,7 @@ export default function Students() {
                       </span>
                     </div>
 
-                    {/* BUTONLAR - Sadece Pending durumunda aktif */}
+            
                     <div className="grid grid-cols-2 gap-3 border-t border-zinc-700 pt-4 mt-auto">
                       <button
                         onClick={() => reject(s.id)}

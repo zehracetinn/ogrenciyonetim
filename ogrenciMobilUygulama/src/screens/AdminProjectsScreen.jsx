@@ -1,4 +1,4 @@
-// src/screens/AdminProjectsScreen.jsx (WEB GÖRSELİNE UYARLANMIŞ)
+
 
 import React, { useEffect, useState } from "react";
 import {
@@ -9,12 +9,12 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  SafeAreaView, // Güvenli alan eklenir
+  SafeAreaView, 
   Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { api } from "../api/api"; // Ortak API bağlantısı kullanılır
+import { api } from "../api/api"; 
 
 export default function AdminProjectsScreen({ navigation }) {
   const [projects, setProjects] = useState([]);
@@ -25,24 +25,22 @@ export default function AdminProjectsScreen({ navigation }) {
     fetchProjects();
   }, []);
   
-  // Component odaklandığında listeyi yenile (Düzenle/Oluştur sonrası geri gelindiğinde)
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', fetchProjects);
     return unsubscribe;
   }, [navigation]);
 
-  // src/screens/AdminProjectsScreen.jsx (fetchProjects fonksiyonu)
 
 const fetchProjects = async () => {
     try {
-      // Axios ile API çağrısı
+   
       const res = await api.get("/Projects"); 
 
-      // 🚨 KRİTİK KONTROL: Eğer API yanıtı 401 (Yetkilendirme Başarısız) ise, 
-      // kullanıcıyı çıkışa zorla ve giriş ekranına yönlendir.
+   
       if (res.status === 401) { 
           Alert.alert("Oturum Süresi Doldu", "Lütfen tekrar giriş yapınız.");
-          // Çıkış yap ve Login ekranına git (AdminDashboard'daki gibi)
+        
           navigation.replace("AdminLoginScreen"); 
           return;
       }
@@ -54,7 +52,7 @@ const fetchProjects = async () => {
       }
       
     } catch (e) {
-      // Hata Nesnesini kontrol edin (Axios'ta e.response.status)
+ 
       if (e.response && e.response.status === 401) {
           Alert.alert("Oturum Süresi Doldu", "Lütfen tekrar giriş yapınız.");
           navigation.replace("AdminLoginScreen"); 
@@ -79,12 +77,12 @@ const fetchProjects = async () => {
                 style: "destructive", 
                 onPress: async () => {
                     try {
-                        // Webdeki silme endpoint'i
+                    
                         const res = await api.delete(`/Projects/${id}`); 
         
                         if (res.status === 200 || res.status === 204) {
                             Alert.alert("Başarılı", "Proje silindi!");
-                            fetchProjects(); // Listeyi yenile
+                            fetchProjects(); 
                         } else {
                             Alert.alert("Hata", "Silme başarısız!");
                         }
@@ -118,7 +116,7 @@ const fetchProjects = async () => {
       {/* + Yeni Proje Oluştur Butonu */}
       <TouchableOpacity
         style={styles.addButton}
-        // AdminTabs'teki Projects Stack'e yönlendirilir
+     
         onPress={() => navigation.navigate("NewProjectScreen")} 
       >
         <Text style={styles.addButtonText}>+ Yeni Proje Oluştur</Text>
@@ -142,10 +140,10 @@ const fetchProjects = async () => {
               <Text style={styles.tech}>Teknolojiler: {p.technologies}</Text>
 
               <View style={styles.btnRow}>
-                {/* 1. Başvuruları Gör */}
+                
                 <TouchableOpacity
                   style={[styles.btn, styles.details]}
-                  // AdminTabs'teki ProjectApplicantsScreen'e yönlendirilir
+                
                   onPress={() =>
                     navigation.navigate("ProjectApplicantsScreen", {
                       projectId: p.id,
@@ -161,7 +159,7 @@ const fetchProjects = async () => {
                 {/* 2. Düzenle */}
                 <TouchableOpacity
                   style={[styles.btn, styles.edit]}
-                  // AdminTabs'teki EditProjectScreen'e yönlendirilir
+                 
                   onPress={() =>
                     navigation.navigate("EditProjectScreen", { projectId: p.id })
                   }
@@ -208,7 +206,7 @@ const styles = StyleSheet.create({
     borderColor: "#333",
   },
   addButton: {
-    backgroundColor: "#28a745", // Webdeki Yeni Proje butonuna yakın yeşil ton
+    backgroundColor: "#28a745", 
     padding: 12,
     borderRadius: 12,
     marginTop: 10,
@@ -216,7 +214,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
   
-  // Kart Stilleri (Webdeki Kart yapısına uyumlu)
+
   card: {
     backgroundColor: "#1a1a1a",
     padding: 15,
@@ -235,7 +233,7 @@ const styles = StyleSheet.create({
       borderWidth: 1, 
       borderColor: "#777" 
   },
-  badgeText: { color: "#ffc107", fontSize: 12, fontWeight: 'bold' }, // Webdeki sarımsı ton
+  badgeText: { color: "#ffc107", fontSize: 12, fontWeight: 'bold' }, 
   
   info: { color: "#bbb", marginTop: 4 },
   tech: { color: "#7ab4ff", marginTop: 8, fontSize: 13 },
@@ -251,9 +249,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
     borderRadius: 8,
   },
-  details: { backgroundColor: "#0052cc" }, // Başvurular (Koyu Mavi)
-  edit: { backgroundColor: "#6c47ff" },   // Düzenle (Mor)
-  delete: { backgroundColor: "#b30000" }, // Sil (Kırmızı)
+  details: { backgroundColor: "#0052cc" }, 
+  edit: { backgroundColor: "#6c47ff" },   
+  delete: { backgroundColor: "#b30000" }, 
   btnText: { color: "#fff", textAlign: "center", fontWeight: "600", fontSize: 14 },
   noDataText: { color: '#aaa', textAlign: 'center', marginTop: 50, fontSize: 16 }
 });
