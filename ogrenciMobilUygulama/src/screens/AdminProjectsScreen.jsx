@@ -1,0 +1,259 @@
+// src/screens/AdminProjectsScreen.jsx (WEB GÖRSELİNE UYARLANMIŞ)
+
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  SafeAreaView, // Güvenli alan eklenir
+  Alert,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Icon from 'react-native-vector-icons/Ionicons';
+import { api } from "../api/api"; // Ortak API bağlantısı kullanılır
+
+export default function AdminProjectsScreen({ navigation }) {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+  
+  // Component odaklandığında listeyi yenile (Düzenle/Oluştur sonrası geri gelindiğinde)
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', fetchProjects);
+    return unsubscribe;
+  }, [navigation]);
+
+  // src/screens/AdminProjectsScreen.jsx (fetchProjects fonksiyonu)
+
+const fetchProjects = async () => {
+    try {
+      // Axios ile API çağrısı
+      const res = await api.get("/Projects"); 
+
+      // 🚨 KRİTİK KONTROL: Eğer API yanıtı 401 (Yetkilendirme Başarısız) ise, 
+      // kullanıcıyı çıkışa zorla ve giriş ekranına yönlendir.
+      if (res.status === 401) { 
+          Alert.alert("Oturum Süresi Doldu", "Lütfen tekrar giriş yapınız.");
+          // Çıkış yap ve Login ekranına git (AdminDashboard'daki gibi)
+          navigation.replace("AdminLoginScreen"); 
+          return;
+      }
+
+      if (res.status === 200) {
+        setProjects(res.data);
+      } else {
+         Alert.alert("Hata", "Proje listesi alınamadı: " + res.status);
+      }
+      
+    } catch (e) {
+      // Hata Nesnesini kontrol edin (Axios'ta e.response.status)
+      if (e.response && e.response.status === 401) {
+          Alert.alert("Oturum Süresi Doldu", "Lütfen tekrar giriş yapınız.");
+          navigation.replace("AdminLoginScreen"); 
+          return;
+      }
+      console.error("Fetch error:", e);
+      Alert.alert("Hata", "Sunucuya bağlanılamadı.");
+      
+    } finally {
+      setLoading(false);
+    }
+};
+
+  const deleteProject = async (id) => {
+    Alert.alert(
+        "Onay",
+        "Bu projeyi silmek istediğinizden emin misiniz?",
+        [
+            { text: "Vazgeç", style: "cancel" },
+            { 
+                text: "Sil", 
+                style: "destructive", 
+                onPress: async () => {
+                    try {
+                        // Webdeki silme endpoint'i
+                        const res = await api.delete(`/Projects/${id}`); 
+        
+                        if (res.status === 200 || res.status === 204) {
+                            Alert.alert("Başarılı", "Proje silindi!");
+                            fetchProjects(); // Listeyi yenile
+                        } else {
+                            Alert.alert("Hata", "Silme başarısız!");
+                        }
+                    } catch (e) {
+                        Alert.alert("Hata", "Silme işleminde ağ hatası.");
+                    }
+                }
+            }
+        ]
+    );
+  };
+
+  const filteredProjects = projects.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase()) || 
+    p.description?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Proje Yönetimi</Text>
+
+      {/* Arama */}
+      <TextInput
+        style={styles.search}
+        placeholder="Proje adı veya açıklamasında ara..."
+        placeholderTextColor="#777"
+        value={search}
+        onChangeText={setSearch}
+      />
+
+      {/* + Yeni Proje Oluştur Butonu */}
+      <TouchableOpacity
+        style={styles.addButton}
+        // AdminTabs'teki Projects Stack'e yönlendirilir
+        onPress={() => navigation.navigate("NewProjectScreen")} 
+      >
+        <Text style={styles.addButtonText}>+ Yeni Proje Oluştur</Text>
+      </TouchableOpacity>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#ffc107" style={{ marginTop: 50 }} />
+      ) : (
+        <ScrollView style={styles.scrollView}>
+          {filteredProjects.map((p) => (
+            <View key={p.id} style={styles.card}>
+              <View style={styles.cardHeader}>
+                  <Text style={styles.name}>{p.name}</Text>
+                  {/* Webdeki Badge stili (Hafta) */}
+                  <View style={styles.badge}>
+                      <Text style={styles.badgeText}>{p.durationWeeks} Hafta</Text>
+                  </View>
+              </View>
+              
+              <Text style={styles.info}>{p.description}</Text>
+              <Text style={styles.tech}>Teknolojiler: {p.technologies}</Text>
+
+              <View style={styles.btnRow}>
+                {/* 1. Başvuruları Gör */}
+                <TouchableOpacity
+                  style={[styles.btn, styles.details]}
+                  // AdminTabs'teki ProjectApplicantsScreen'e yönlendirilir
+                  onPress={() =>
+                    navigation.navigate("ProjectApplicantsScreen", {
+                      projectId: p.id,
+                      name: p.name,
+                    })
+                  }
+                >
+                  <Text style={styles.btnText}>Başvuruları Gör</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[styles.btnRow, { marginTop: 10 }]}>
+                {/* 2. Düzenle */}
+                <TouchableOpacity
+                  style={[styles.btn, styles.edit]}
+                  // AdminTabs'teki EditProjectScreen'e yönlendirilir
+                  onPress={() =>
+                    navigation.navigate("EditProjectScreen", { projectId: p.id })
+                  }
+                >
+                  <Text style={styles.btnText}>Düzenle</Text>
+                </TouchableOpacity>
+
+                {/* 3. Sil */}
+                <TouchableOpacity
+                  style={[styles.btn, styles.delete]}
+                  onPress={() => deleteProject(p.id)}
+                >
+                  <Text style={styles.btnText}>Sil</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+          {filteredProjects.length === 0 && (
+              <Text style={styles.noDataText}>Hiç proje bulunamadı.</Text>
+          )}
+        </ScrollView>
+      )}
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#0d0d0d", paddingHorizontal: 20 },
+  scrollView: { marginTop: 15 },
+  title: {
+    color: "#fff",
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: "center",
+  },
+  search: {
+    backgroundColor: "#1e1e1e",
+    padding: 12,
+    borderRadius: 12,
+    color: "white",
+    borderWidth: 1,
+    borderColor: "#333",
+  },
+  addButton: {
+    backgroundColor: "#28a745", // Webdeki Yeni Proje butonuna yakın yeşil ton
+    padding: 12,
+    borderRadius: 12,
+    marginTop: 10,
+    alignItems: "center",
+  },
+  addButtonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  
+  // Kart Stilleri (Webdeki Kart yapısına uyumlu)
+  card: {
+    backgroundColor: "#1a1a1a",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: "#333",
+  },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 5 },
+  name: { color: "#fff", fontSize: 20, fontWeight: "700", flexShrink: 1 },
+  badge: { 
+      backgroundColor: "#444", 
+      paddingHorizontal: 8, 
+      paddingVertical: 4, 
+      borderRadius: 12, 
+      borderWidth: 1, 
+      borderColor: "#777" 
+  },
+  badgeText: { color: "#ffc107", fontSize: 12, fontWeight: 'bold' }, // Webdeki sarımsı ton
+  
+  info: { color: "#bbb", marginTop: 4 },
+  tech: { color: "#7ab4ff", marginTop: 8, fontSize: 13 },
+  
+  btnRow: {
+    flexDirection: "row",
+    marginTop: 15,
+    justifyContent: "space-between",
+  },
+  btn: {
+    padding: 10,
+    flex: 1,
+    marginHorizontal: 3,
+    borderRadius: 8,
+  },
+  details: { backgroundColor: "#0052cc" }, // Başvurular (Koyu Mavi)
+  edit: { backgroundColor: "#6c47ff" },   // Düzenle (Mor)
+  delete: { backgroundColor: "#b30000" }, // Sil (Kırmızı)
+  btnText: { color: "#fff", textAlign: "center", fontWeight: "600", fontSize: 14 },
+  noDataText: { color: '#aaa', textAlign: 'center', marginTop: 50, fontSize: 16 }
+});
