@@ -174,7 +174,8 @@ export default function AdminStudentsScreen({ navigation }) {
    
         <TouchableOpacity 
             style={styles.detailButton} 
-            onPress={() => navigation.navigate("StudentDetailScreen", { studentId: s.id })}
+            onPress={() => navigation.navigate("StudentDetailScreen", { student: s })
+}
         >
             <Text style={styles.detailButtonText}>Detay Gör</Text>
         </TouchableOpacity>
